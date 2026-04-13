@@ -1,0 +1,28 @@
+---
+title: Create InstancedEntity
+---
+
+Each instance can automatically create an associated [`InstancedEntity`](https://agargaro.github.io/instanced-mesh/api/classes/instancedentity) 
+(an object similar to [`Object3D`](https://threejs.org/docs/#api/en/core/Object3D)).<br/>
+This provides a simple API to access and modify instance properties, as shown below:
+
+```ts
+iMesh.instances[index].position.random();
+iMesh.instances[index].rotateX(Math.PI);
+iMesh.instances[index].updateMatrix(); // Required after transformations
+```
+
+To enable entity creation, set the [`createEntities`](https://agargaro.github.io/instanced-mesh/api/interfaces/instancedmesh2params/#createentities) 
+flag in the constructor parameters:
+
+```ts
+const iMesh = new InstancedMesh2(geo, mat, { createEntities: true });
+```
+
+:::note
+Check out the `InstancedEntity` API [here](https://agargaro.github.io/instanced-mesh/api/classes/instancedentity).
+:::
+
+### Example
+
+<Example path='instances-array'/>

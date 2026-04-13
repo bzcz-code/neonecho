@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fake Glow Material for Vanilla Three.js - by Anderson Mancini</title>
+
+  <meta name="description"
+    content="Mesh-based fake glow material. Does not require post-processing. For Vanilla Three.js" />
+
+  <meta property="og:url" content="https://fake-glow-material-threejs.vercel.app/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title"
+    content="Mesh-based fake glow material. Does not require post-processing. For Vanilla Three.js" />
+  <meta property="og:description"
+    content="Mesh-based fake glow material. Does not require post-processing. For Vanilla Three.js" />
+  <meta property="og:image" content="https://fake-glow-material-threejs.vercel.app/preview.jpg" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta property="twitter:domain" content="fake-glow-material-threejs.vercel.app" />
+  <meta property="twitter:url" content="https://fake-glow-material-threejs.vercel.app/" />
+  <meta name="twitter:title"
+    content="Mesh-based fake glow material. Does not require post-processing. For Vanilla Three.js" />
+  <meta name="twitter:description"
+    content="Mesh-based fake glow material. Does not require post-processing. For Vanilla Three.js" />
+  <meta name="twitter:image" content="https://fake-glow-material-threejs.vercel.app/preview.jpg" />
+
+  <meta name="keywords" content="fake glow, glow, three.js, threejs, HTML, CSS, JavaScript" />
+  <meta name="author" content="andersonmancini.dev" />
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+
+  <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+  <div class="container" draggable="false">
+    <h1>FAKE GLOW</h1>
+
+    <div className='buttons'>
+
+      <button onClick="(() => window.open(
+        'https://github.com/ektogamat/fake-glow-material-threejs',
+        'tab'
+      ))()">DOWNLOAD FOR VANILLA THREE.JS</button>
+      <button onClick="(() => window.open(
+        'https://github.com/ektogamat/fake-glow-material-r3f',
+        'tab'
+      ))()">
+        DOWNLOAD FOR REACT THREE FIBER
+      </button>
+
+    </div>
+
+    <small>NEW MATERIAL FOR VANILLA THREEJS - Created with 💛 by <a href="https://andersonmancini.dev"
+        target="_blank">Anderson Mancini.DEV</a>
+    </small>
+
+  </div>
+  <canvas class="webgl"></canvas>
+  <script type="module" src="./script.js"></script>
+</body>
+
+</html>

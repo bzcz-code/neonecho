@@ -1,0 +1,6 @@
+# 排除整个参考仓库文件夹
+ThreeJS_Templates/
+
+# 如果你还有其他大的资源文件，也可以一并排除
+public/assets/large_models/
+*.log
