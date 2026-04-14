@@ -1,0 +1,13 @@
+{
+  "name": "neon-echo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "predev": "node scripts/startup.js",
+    "dev": "concurrently -c \"cyan,magenta,yellow\" \"pnpm --filter frontend dev\" \"pnpm --filter backend dev\" \"pnpm --filter python-service dev\""
+  },
+  "devDependencies": {
+    "chalk": "4.1.2",
+    "concurrently": "^8.2.2"
+  }
+}

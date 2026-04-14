@@ -31,6 +31,7 @@
 - ❌ 禁止一次性读取多个里程碑文档
 - ❌ 禁止在开发M1时读取M2/M3/M4文档
 - ❌ 禁止将所有PRD内容复制到对话中
+- ❌禁止在没有接收到指令的情况下生成代码或文件
 
 ### 3. 正确流程
 
@@ -95,7 +96,6 @@ M3需要M2的Shader → 只读取具体Shader文件（不读PRD）
 - Diff behavior between main and your changes when relevant
 - Ask yourself: "Would a staff engineer approve this?"
 - Run tests, check logs, demonstrate correctness
-- 用playwrite截图多张前端画面，使用minimax描述，与milestone.md里的目标对比
 
 ### 5. Demand Elegance (Balanced)
 - For non-trivial changes: pause and ask "is there a more elegant way?"
@@ -121,5 +121,9 @@ M3需要M2的Shader → 只读取具体Shader文件（不读PRD）
 ## Core Principles
 
 - **Simplicity First**: Make every change as simple as possible. Impact minimal code.
+
 - **No Laziness**: Find root causes. No temporary fixes. Senior developer standards.
+
 - **Minimal Impact**: Changes should only touch what's necessary. Avoid introducing bugs.
+
+  

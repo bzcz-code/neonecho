@@ -1,0 +1,17 @@
+{
+  "name": "@neon-echo/shared",
+  "version": "1.0.0",
+  "main": "./types.ts",
+  "types": "./types.ts",
+  "exports": {
+    ".": {
+      "types": "./types.ts",
+      "default": "./types.ts"
+    },
+    "./types": "./types.ts",
+    "./constants": "./constants.ts"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.2"
+  }
+}
