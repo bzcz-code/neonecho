@@ -1,1 +1,0 @@
-vec2 truchetPattern(vec2 s, float i) { i = fract((i - .5) * 2.); return mix(mix(s, vec2(1.) - s, step(.5, i)), vec2(1. - s.x, s.y), step(.75, i));}
