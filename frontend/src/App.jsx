@@ -6,11 +6,11 @@ import { EffectComposer, Bloom, ChromaticAberration, Noise, Vignette } from '@re
 // ==========================================
 // 1. 物理常数与视角契约
 // ==========================================
-const CAM_POS = [-8, 7.5, 26.0];
+const CAM_POS = [-8, 5.5, 26.0];
 const Y_TOP = 24.0, Z_WINDOW = -2.0, Y_DESK = -12.1;
 const CAMERA_CONFIG = {
-  immersive: { target: [-8, 7.5, -10], fov: 70 },
-  work: { target: [40, -48.0, 26.0], fov: 55 }
+  immersive: { target: [-8, 5.5, -10], fov: 70 },
+  work: { target: [40, -50.0, 26.0], fov: 55 }
 };
 
 // ==========================================
@@ -58,6 +58,45 @@ const CyberCity = () => {
       <boxGeometry />
       <meshStandardMaterial roughness={0.4} metalness={0.6} emissive="#000000" />
     </instancedMesh>
+  );
+};
+
+// ==========================================
+// 2.5 桌面物件组件
+// ==========================================
+const Interactable = ({ children, scale = 1.1 }) => {
+  const [hovered, setHovered] = React.useState(false);
+  return (
+    <group onPointerOver={() => setHovered(true)} onPointerOut={() => setHovered(false)} scale={hovered ? scale : 1}>
+      {children}
+    </group>
+  );
+};
+
+const DeskItems = () => {
+  const t = { x: 8, y: -12.1, z: 26.0 }; // 对齐 App.jsx 中的 Y_DESK 和相机焦点
+  return (
+    <group position={[t.x, t.y, t.z]}>
+      {/* 香薰灯 */}
+      <Interactable>
+        <group position={[-10, 1.5, -5]}>
+          <mesh position={[0, -1, 0]}><cylinderGeometry args={[1.8, 2.2, 2, 32]} /><meshStandardMaterial color="#111" /></mesh>
+          <mesh><capsuleGeometry args={[1.3, 2.8, 16]} /><meshStandardMaterial color="#ff8833" emissive="#ff5500" emissiveIntensity={6} toneMapped={false}/></mesh>
+          <pointLight color="#ffaa55" intensity={100} distance={50} />
+        </group>
+      </Interactable>
+      {/* 猫窝占位 */}
+      <group position={[0, 0.25, 0]}>
+        <mesh><cylinderGeometry args={[5.5, 5.5, 0.6, 32]} /><meshStandardMaterial color="#121212" roughness={1}/></mesh>
+      </group>
+      {/* 数据终端 */}
+      <Interactable>
+        <group position={[9, 0.5, 6]} rotation={[-0.3, -0.6, 0]}>
+          <mesh><boxGeometry args={[7, 0.5, 5]} /><meshStandardMaterial color="#111" /></mesh>
+          <mesh position={[0, 0.26, 0]} rotation={[-Math.PI/2,0,0]}><planeGeometry args={[6.5,4.5]}/><meshBasicMaterial color="#00ff44" transparent opacity={0.3} toneMapped={false}/></mesh>
+        </group>
+      </Interactable>
+    </group>
   );
 };
 
@@ -222,50 +261,41 @@ const WeatherSystem = () => {
 };
 
 // ==========================================
-// 3. 飞船舱内环境与物理玻璃 (修复渲染遮蔽)
+// 3. 飞船舱内环境与物理玻璃 (修复穿模变黑)
 // ==========================================
-const CabinEnvironment = () => {
-  return (
-    <group>
-      {/* 工作台 */}
-      <mesh position={[12, Y_DESK - 0.05, 73]} receiveShadow>
-        <boxGeometry args={[60, 0.1, 150]} />
-        <meshStandardMaterial color="#080808" roughness={0.7} metalness={0.1} />
-      </mesh>
+const CabinEnvironment = () => (
+  <group>
+    <mesh position={[12, Y_DESK - 0.05, 73]} receiveShadow>
+      <boxGeometry args={[60, 0.1, 150]} />
+      <meshStandardMaterial color="#080808" roughness={0.7} />
+    </mesh>
+    <mesh position={[0, Y_TOP + 2.5, Z_WINDOW]}><boxGeometry args={[1500, 5, 5]} /><meshStandardMaterial color="#010101" /></mesh>
 
-      {/* 上下窗框 */}
-      <mesh position={[0, Y_TOP + 2.5, Z_WINDOW]}><boxGeometry args={[150, 5, 5]} /><meshStandardMaterial color="#010101" /></mesh>
-      <mesh position={[0, Y_DESK - 2.5, Z_WINDOW]}><boxGeometry args={[150, 5, 5]} /><meshStandardMaterial color="#010101" /></mesh>
+    {/* 修复：下移 0.1 防止穿模，解决变黑 Bug */}
+    <mesh position={[0, Y_DESK - 2.6, Z_WINDOW]}>
+      <boxGeometry args={[1500, 5, 5]} />
+      <meshStandardMaterial color="#010101" />
+    </mesh>
 
-      {/* 【核心修复】：放弃 transmission，改为深色镀膜玻璃 */}
-      <mesh position={[0, (Y_TOP + Y_DESK) / 2, Z_WINDOW - 0.5]}>
-        <boxGeometry args={[150, Math.abs(Y_TOP - Y_DESK), 0.2]} />
-        <meshStandardMaterial
-          color="#050810"
-          transparent={true}
-          opacity={0.3}
-          roughness={0.1}
-          metalness={0.5}
-        />
-      </mesh>
-    </group>
-  );
-};
+    <mesh position={[0, (Y_TOP + Y_DESK) / 2, Z_WINDOW - 0.5]}>
+      <boxGeometry args={[150, Math.abs(Y_TOP - Y_DESK), 0.2]} />
+      <meshStandardMaterial color="#050810" transparent opacity={0.3} emissive="#020408" emissiveIntensity={1} />
+    </mesh>
+  </group>
+);
 
 // ==========================================
-// 4. 后处理滤镜管线 (保护细雨的纯净版)
+// 4. 后处理滤镜管线 (暗角锁定)
 // ==========================================
-const PostProcessingPipeline = () => {
-  return (
-    <EffectComposer multisampling={0}>
-      <Bloom luminanceThreshold={1.0} mipmapBlur intensity={0.8} />
-      {/* 恢复极低色散，只保留一点点镜头感，绝不干扰雨滴 */}
-      <ChromaticAberration offset={[0.0005, 0.0005]} />
-      <Noise opacity={0.008} />
-      <Vignette offset={0.3} darkness={0.5} />
-    </EffectComposer>
-  );
-};
+const PostProcessingPipeline = () => (
+  <EffectComposer multisampling={0}>
+    <Bloom luminanceThreshold={1.0} mipmapBlur intensity={0.8} />
+    <ChromaticAberration offset={[0.0005, 0.0005]} />
+    <Noise opacity={0.008} />
+    {/* 锁定暗角参数，确保视野开阔 */}
+    <Vignette offset={0.3} darkness={0.05} />
+  </EffectComposer>
+);
 
 // ==========================================
 // 5. 相机控制器
@@ -289,23 +319,22 @@ const CameraCtrl = ({ mode }) => {
 // 6. 根组件与环境光插值
 // ==========================================
 const World = ({ mode }) => {
-  const ambRef = useRef();
-
+  const hemiRef = useRef();
   useFrame((_, d) => {
-    if (ambRef.current) {
-      // 提高工作模式的环境光基数 (0.5)，确保视野周围有足够的亮度
-      const targetAmb = mode === 'work' ? 0.5 : 0.3;
-      ambRef.current.intensity = THREE.MathUtils.lerp(ambRef.current.intensity, targetAmb, d * 3);
+    if (hemiRef.current) {
+      // 动态补偿：工作模式下增强天空散射光，防止窗边死黑
+      hemiRef.current.intensity = THREE.MathUtils.lerp(hemiRef.current.intensity, mode === 'work' ? 1.2 : 0.6, d * 3);
     }
   });
-
   return (
     <>
-      <ambientLight ref={ambRef} intensity={0.3} />
+      <hemisphereLight ref={hemiRef} color="#88aaff" groundColor="#111" />
+      <ambientLight intensity={0.4} />
       <CabinEnvironment />
-      <CyberCity /> {/* 旋转速度保持 d * 0.035 */}
+      <CyberCity />
       <DayNightSystem mode={mode} />
-      <WeatherSystem /> {/* 保持你喜欢的上一版雨滴效果 */}
+      <WeatherSystem />
+      <DeskItems /> {/* 挂载桌面物件 */}
     </>
   );
 };
